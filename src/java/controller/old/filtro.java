@@ -1,4 +1,4 @@
-package controller;
+package controller.old;
 
 import java.io.IOException;
 import javax.servlet.Filter;
@@ -9,8 +9,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebFilter;
 import javax.servlet.http.HttpServletRequest;
-import entidade.Cliente;
-import entidade.Administrador;
+import aplicacao.Usuario;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletResponse;
 
@@ -25,24 +24,23 @@ public class filtro implements Filter {
         // e os CSS e JS necessários
         if ((uri.equals("/BancoZeta/"))
                 || (uri.contains("/bootstrap"))
+                || (uri.contains("/efetuarLogin"))
+                || (uri.contains("/comentarios"))
+                || (uri.contains("/MostrarComentarios"))
                 || (uri.contains("/AutenticaController"))
-                || (uri.contains("/formLoginAdmin"))
-                || (uri.contains("/formLoginCliente"))
+                || (uri.contains("/formLogin"))
                 || (uri.contains("/menu"))
                 || (uri.contains("/index"))) {
             chain.doFilter((HttpServletRequest) request, (HttpServletResponse) response);
         } else {
             // se a área necessita de login verifica se o usuário está na sessão - está logado
-            Cliente cliente = (Cliente) ((HttpServletRequest) request).getSession().getAttribute("cliente");
-            Administrador administrador = (Administrador) ((HttpServletRequest) request).getSession().getAttribute("administrador");
-            
-            if ((cliente != null) && (!((String) cliente.getNome()).isEmpty()) 
-             || (administrador != null) && (!((String) administrador.getNome()).isEmpty())) {
+            Usuario usuario = (Usuario) ((HttpServletRequest) request).getSession().getAttribute("usuario");
+            if ((usuario != null) && (!((String) usuario.getNome()).isEmpty())) {
                 chain.doFilter((HttpServletRequest) request, (HttpServletResponse) response);
             } else {
                 ((HttpServletRequest) request).setAttribute("msgError", "É necessário fazer login");
                 
-                RequestDispatcher rd = request.getRequestDispatcher("index.jsp");
+                RequestDispatcher rd = request.getRequestDispatcher("/autenticacao/formLogin.jsp");
                 rd.forward(request, response);
 
             }

@@ -1,24 +1,16 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
-package model;
+package model.old;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-/**
- *
- * @author User
- */
+
 public class Conexao {
-    /* Banco de dados: `zdb` */
+    /* Banco de dados: `dbjava` */
     private Connection conexao;
 
     public Conexao() {
-                
         try {
-            Class.forName("com.mysql.cj.jdbc.Driver"); //load driver  
-            conexao = DriverManager.getConnection("jdbc:mysql://localhost:3306/dbzeta", "root", "root");
+            Class.forName("com.mysql.jdbc.Driver"); //load driver  
+            conexao = DriverManager.getConnection("jdbc:mysql://localhost:3306/exemplo_mvc", "root", "root");
         } catch (SQLException e) {
             throw new RuntimeException("Nao foi possivel efetuar uma conexao com o BD!");
         } catch (ClassNotFoundException e) {
@@ -33,8 +25,9 @@ public class Conexao {
     public void closeConexao() {
         try {
             this.conexao.close();
-        } catch (SQLException e) {
-            System.err.println(e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
+
 }

@@ -1,4 +1,4 @@
-<%@page contentType="text/html" pageEncoding="UTF-8" import="aplicacao.Usuario" %>
+<%@page contentType="text/html" pageEncoding="UTF-8" import="entidade.Administrador" import="entidade.Cliente"%>
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
     <div class="container-fluid">
         <a class="navbar-brand" href="index.jsp">Home</a>
@@ -12,18 +12,25 @@
                     // testar se está logado
                     HttpSession sessao = request.getSession(false);
                     if (sessao != null) {
-                        Usuario usuarioLogado = (Usuario) session.getAttribute("usuario");
-                        if (usuarioLogado != null) { %>
-                            <a class="nav-link" href="DashboardController">Dashboard</a>
-                            <a class="nav-link" href="UsuarioController?acao=Listar">Usuários</a>
-                            <a class="nav-link" href="ComentarioController?acao=Listar">Comentários</a>
-                            <a class="nav-link" href="AutenticaController?acao=Logout">Logout</a>
-                <%  } else { %>
-                            
-                            <a class="nav-link" href="MostrarComentarios">Coment&aacute;rios</a>
-                            <a class="nav-link" href="AutenticaController?acao=Login">Login</a>
-                <%    }
-                    }%>
+                        Administrador administradorLogado = (Administrador) session.getAttribute("administrador");
+                        Cliente clienteLogado = (Cliente) session.getAttribute("cliente");
+                        if (administradorLogado != null) { %>
+                            <a class="nav-link" href="DashboardControllerAdmin">Dashboard</a>
+                            <a class="nav-link" href="AutenticaControllerAdmin?acao=Logout">Logout</a>
+                <%  } else {
+                            if (clienteLogado != null) { %>
+                                <a class="nav-link" href="DashboardControllerCliente">Dashboard</a>
+                                <a class="nav-link" href="ClienteController?acao=Extrato">Extrato</a>
+                                <a class="nav-link" href="SaqueController?acao=NovoSaque">Saque</a>
+                                <a class="nav-link" href="DepositoController?acao=NovoDeposito">Deposito</a>
+                                <a class="nav-link" href="TransferenciaController?acao=NovaTranferencia">Transferencia</a>
+                                <a class="nav-link" href="InvestimentoController?acao=NovoInvestimento">Investimentos</a>
+                                <a class="nav-link" href="AutenticaControllerCliente?acao=Logout">Logout</a>
+                        <%  } else { %>
+                                    <a class="nav-link" href="AutenticaControllerCliente?acao=Login">Login Cliente</a>
+                                    <a class="nav-link" href="AutenticaControllerAdmin?acao=Login">Login Administrador</a>
+                        <%  }}
+                    }           %>
 
             </div>
         </div>
