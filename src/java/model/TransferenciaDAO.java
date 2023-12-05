@@ -1,5 +1,7 @@
 package model;
 
+import entidade.Cliente;
+import model.ClienteDAO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,10 +15,16 @@ public class TransferenciaDAO{
         Conexao conexao = new Conexao();
         
         try {
+            
+            Cliente cliente = new Cliente();
+            ClienteDAO cli = new ClienteDAO();
+            cliente = cli.getCliente(transferencia.getContaDestino());
+            
             PreparedStatement sql = conexao.getConexao().prepareStatement("UPDATE clientes SET saldo = ?  WHERE NUMCONTA = ?");
-            sql.setDouble(1, saldo+transferencia.getValor());
+            sql.setDouble(1, cliente.getSaldo()+transferencia.getValor());
             sql.setInt(2, transferencia.getContaDestino());
             sql.executeUpdate();
+           
             
             PreparedStatement sql2 = conexao.getConexao().prepareStatement("UPDATE clientes SET saldo = ?  WHERE NUMCONTA = ?");
             sql2.setDouble(1, saldo-transferencia.getValor());
