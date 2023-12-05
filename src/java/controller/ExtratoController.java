@@ -39,13 +39,26 @@ public class ExtratoController extends HttpServlet {
                     throw new RuntimeException("Falha na query listar extratos (Extrato) ");
                 }
                 break;
+            case "ExtratoSaldo":
+                try {
+                    ArrayList<Extrato> ExtratoSaldo = extratoDAO.ExtratoSaldo();
+                    request.setAttribute("msgOperacaoRealizada", "");
+                    request.setAttribute("ExtratoSaldo", ExtratoSaldo);
+                    rd = request.getRequestDispatcher("/view/extrato/listaExtratoSaldo.jsp");
+                    rd.forward(request, response);
+
+                } catch (IOException | ServletException ex) {
+                    System.out.println(ex.getMessage());
+                    throw new RuntimeException("Falha na query listar extratosaldo (Extrato) ");
+                }
+                break;
 
         }
         request.setAttribute("extrato", extrato);
         request.setAttribute("msgError", "");
         request.setAttribute("acao", acao);
 
-        rd = request.getRequestDispatcher("/view/extrato/formExtrato.jsp");
+        rd = request.getRequestDispatcher("/view/extrato/listaExtrato.jsp");
         rd.forward(request, response);
 
     }

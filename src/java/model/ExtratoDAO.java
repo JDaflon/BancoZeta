@@ -38,5 +38,34 @@ public class ExtratoDAO {
         }
         return extrato;
     }   
+    
+    public ArrayList<Extrato> ExtratoSaldo() {
+        ArrayList<Extrato> extrato = new ArrayList();
+        Conexao conexao = new Conexao();
+        try {
+            PreparedStatement preparedStatement = conexao.getConexao().prepareStatement( 
+                                " SELECT 'transferencia' as operacao, ContaOrigem as contaorigem, ContaDestino as contaDestino, valor, transferencias.data from transferencias"
+                              + " union SELECT 'deposito' as operacao, ContaDepositante as contaOrigem, ContaDepositario as contaDestino, valor, depositos.data from depositos"
+                              + " union SELECT 'saque' as operacao, numConta as ContaOrigem, numConta as contaDestino, valor, saques.data from saques"
+                              + " order by data desc");
+            ResultSet resultado = preparedStatement.executeQuery();
+            if (resultado != null) {
+                while (resultado.next()) {
+                    Extrato operacao = new Extrato(
+                            resultado.getString("OPERACAO"),
+                            resultado.getInt("contaOrigem"),
+                            resultado.getInt("contaDestino"),
+                            resultado.getDouble("VALOR"),
+                            resultado.getTimestamp("DATA"));
+                    extrato.add(operacao);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Query de select (Extrato) incorreta");
+        } finally {
+            conexao.closeConexao();
+        }
+        return extrato;
+    }   
 
 }

@@ -5,7 +5,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import entidade.Cliente;
-import entidade.Extrato;
 
 public class ClienteDAO {
     
@@ -19,7 +18,7 @@ public class ClienteDAO {
             sql.setString(3, cliente.getCpf());
             sql.setString(4, cliente.getSenha());
             sql.setString(5, cliente.getEmail());
-            sql.setDouble(6, cliente.getSaldo());
+            sql.setDouble(6, 0);
             sql.executeUpdate();
 
         } catch (SQLException e) {
@@ -29,12 +28,12 @@ public class ClienteDAO {
         }
     }
 
-    public Cliente getCliente(int id) throws Exception {
+    public Cliente getCliente(int numConta) throws Exception {
         Conexao conexao = new Conexao();
         try {
             Cliente cliente = new Cliente();
             PreparedStatement sql = conexao.getConexao().prepareStatement("SELECT * FROM clientes WHERE numConta = ? ");
-            sql.setInt(1, id);
+            sql.setInt(1, numConta);
             ResultSet resultado = sql.executeQuery();
 
             if (resultado != null) {
@@ -78,7 +77,7 @@ public class ClienteDAO {
     public void Excluir(Cliente cliente) throws Exception {
         Conexao conexao = new Conexao();
         try {
-            PreparedStatement sql = conexao.getConexao().prepareStatement("DELETE FROM clientes WHERE NumConta = ? ");
+            PreparedStatement sql = conexao.getConexao().prepareStatement("DELETE FROM clientes WHERE numConta = ? ");
             sql.setInt(1, cliente.getNumConta());
             sql.executeUpdate();
 
@@ -116,36 +115,7 @@ public class ClienteDAO {
             conexao.closeConexao();
         }
         return meusClientes;
-    }
-    
-    public ArrayList<Extrato> Extrato(int id) {
-        ArrayList<Extrato> extrato = new ArrayList();
-        Conexao conexao = new Conexao();
-        try {
-            PreparedStatement preparedStatement = conexao.getConexao().prepareStatement( "SELECT 'transferencia' as operacao, ContaDestino as conta, valor, transferencias.data from transferencias WHERE ContaOrigem = ?"
-                              + " union SELECT 'deposito' as operacao, ContaDepositario as conta, valor, depositos.data from depositos WHERE ContaDepositante = ?"
-                              + " union SELECT 'saque' as operacao, numConta as conta, valor, saques.data from saques WHERE numConta = ?"
-                              + " order by data desc");
-            preparedStatement.setInt(1, id);
-            ResultSet resultado = preparedStatement.executeQuery();
-            if (resultado != null) {
-                while (resultado.next()) {
-                    Extrato operacao = new Extrato(
-                            resultado.getString("OPERACAO"),
-                            resultado.getInt("ContaDestino"),
-                            resultado.getDouble("VALOR"),
-                            resultado.getTimestamp("DATA"));
-                    operacao.setId(Integer.parseInt(resultado.getString("ID")));
-                    extrato.add(operacao);
-                }
-            }
-        } catch (SQLException e) {
-            throw new RuntimeException("Query de select (ListaDeCliente) incorreta");
-        } finally {
-            conexao.closeConexao();
-        }
-        return extrato;
-    }   
+    } 
 
     public Cliente Logar(Cliente cliente) throws Exception {
         Conexao conexao = new Conexao();

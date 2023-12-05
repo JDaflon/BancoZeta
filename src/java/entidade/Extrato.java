@@ -4,12 +4,20 @@ import java.sql.Timestamp;
 
 public class Extrato {
     private int id;
+    private int ContaOrigem;
     private int ContaDestino;
     private String operacao;
     private double valor;
     private Timestamp data;
 
     public Extrato(String operacao, int ContaDestino, double valor, Timestamp data) {
+        this.ContaDestino = ContaDestino;
+        this.operacao = operacao;
+        this.data = data;
+        this.valor = valor;
+    }
+    
+    public Extrato(String operacao, int ContaOrigem, int ContaDestino, double valor, Timestamp data) {
         this.ContaDestino = ContaDestino;
         this.operacao = operacao;
         this.data = data;
@@ -30,6 +38,14 @@ public class Extrato {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public int getContaOrigem() {
+        return ContaOrigem;
+    }
+
+    public void setContaOrigem(int ContaOrigem) {
+        this.ContaOrigem = ContaOrigem;
     }
     
     public int getContaDestino() {

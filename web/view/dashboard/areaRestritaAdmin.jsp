@@ -7,7 +7,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="shortcut icon" href="#">
-        <title>Exemplo MVC</title>
+        <title>Administrador</title>
         <link href="view/bootstrap/bootstrap.min.css"  rel="stylesheet"> 
     </head>
     <body>
@@ -17,10 +17,10 @@
 
                 <h1>Área Restrita</h1>
                 <%
-                    Administrador AdministradorLogado = (Administrador) session.getAttribute("Administrador");
+                    Administrador AdministradorLogado = (Administrador) session.getAttribute("administrador");
                     out.println("<h3>Administrador logado com sucesso</h3>");
-                    //out.println("<h2>Nome: " + AdministradorLogado.getNome() + "</h2>");
-                    //out.println("<h2>CPF: " + AdministradorLogado.getCpf()+ "</h2>");
+                    out.println("<h2>Nome: " + AdministradorLogado.getNome() + "</h2>");
+                    out.println("<h2>CPF: " + AdministradorLogado.getCpf()+ "</h2>");
                     
                     
                 %>

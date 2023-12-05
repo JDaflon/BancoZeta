@@ -16,6 +16,8 @@
                         Cliente clienteLogado = (Cliente) session.getAttribute("cliente");
                         if (administradorLogado != null) { %>
                             <a class="nav-link" href="DashboardControllerAdmin">Dashboard</a>
+                            <a class="nav-link" href="ClienteController?acao=Listar">Gerenciar Clientes</a>
+                            <a class="nav-link" href="ExtratoController?acao=ExtratoSaldo">Consulta Saldo e Extrato</a>
                             <a class="nav-link" href="AutenticaControllerAdmin?acao=Logout">Logout</a>
                 <%  } else {
                             if (clienteLogado != null) { %>

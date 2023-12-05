@@ -29,7 +29,7 @@ public class ClienteController extends HttpServlet {
                     ArrayList<Cliente> listaClientes = clienteDAO.ListaDeCliente();
                     request.setAttribute("msgOperacaoRealizada", "");
                     request.setAttribute("listaClientes", listaClientes);
-                    rd = request.getRequestDispatcher("/view/cliente/listaClientes.jsp");
+                    rd = request.getRequestDispatcher("/view/cliente/listaCliente.jsp");
                     rd.forward(request, response);
 
                 } catch (IOException | ServletException ex) {
@@ -40,9 +40,9 @@ public class ClienteController extends HttpServlet {
             case "Alterar":
             case "Excluir":
                 try {
-                    int id = Integer.parseInt(request.getParameter("id"));
-                    cliente = clienteDAO.getCliente(id);
-                    cliente.setId(id);
+                    int numConta = Integer.parseInt(request.getParameter("numConta"));
+                    cliente = clienteDAO.getCliente(numConta);
+                    cliente.setNumConta(numConta);
                 } catch (Exception ex) {
                     System.out.println(ex.getMessage());
                     throw new RuntimeException("Falha em uma query para cadastro de cliente");
@@ -69,7 +69,7 @@ public class ClienteController extends HttpServlet {
         String cpf = request.getParameter("cpf");
         String senha = request.getParameter("senha");
         String email = request.getParameter("email");
-        double saldo = Double.parseDouble(request.getParameter("saldo"));
+        double saldo = 0;
         String btEnviar = request.getParameter("btEnviar");
 
         RequestDispatcher rd;
@@ -78,14 +78,14 @@ public class ClienteController extends HttpServlet {
 
             Cliente cliente = new Cliente();
             switch (btEnviar) {
-                case "Incluir":
-                    request.setAttribute("acao", "Incluir");
+                case "Inserir":
+                    request.setAttribute("acao", "Inserir");
                     break;
                 case "Alterar":
                 case "Excluir":
                     try {
                         ClienteDAO clienteDAO = new ClienteDAO();
-                        cliente = clienteDAO.getCliente(id);
+                        cliente = clienteDAO.getCliente(numConta);
                     } catch (Exception ex) {
                         System.out.println(ex.getMessage());
                         throw new RuntimeException("Falha em uma query para cadastro de cliente");
@@ -108,7 +108,7 @@ public class ClienteController extends HttpServlet {
 
             try {
                 switch (btEnviar) {
-                    case "Incluir":
+                    case "Inserir":
                         clienteDAO.Inserir(cliente);
                         request.setAttribute("msgOperacaoRealizada", "Inclusão realizada com sucesso");
                         break;
@@ -125,7 +125,7 @@ public class ClienteController extends HttpServlet {
                 ArrayList<Cliente> listaClientes = clienteDAO.ListaDeCliente();
                 request.setAttribute("listaClientes", listaClientes);
 
-                rd = request.getRequestDispatcher("/view/cliente/listaClientes.jsp");
+                rd = request.getRequestDispatcher("/view/cliente/listaCliente.jsp");
                 rd.forward(request, response);
 
             } catch (Exception ex) {
