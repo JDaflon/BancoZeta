@@ -20,10 +20,10 @@
                 <%  } else {
                             if (clienteLogado != null) { %>
                                 <a class="nav-link" href="DashboardControllerCliente">Dashboard</a>
-                                <a class="nav-link" href="ClienteController?acao=Extrato">Extrato</a>
+                                <a class="nav-link" href="ExtratoController?acao=Extrato">Extrato</a>
                                 <a class="nav-link" href="SaqueController?acao=NovoSaque">Saque</a>
                                 <a class="nav-link" href="DepositoController?acao=NovoDeposito">Deposito</a>
-                                <a class="nav-link" href="TransferenciaController?acao=NovaTranferencia">Transferencia</a>
+                                <a class="nav-link" href="TransferenciaController?acao=NovaTransferencia">Transferencia</a>
                                 <a class="nav-link" href="InvestimentoController?acao=NovoInvestimento">Investimentos</a>
                                 <a class="nav-link" href="AutenticaControllerCliente?acao=Logout">Logout</a>
                         <%  } else { %>

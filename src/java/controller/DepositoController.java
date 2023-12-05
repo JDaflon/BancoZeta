@@ -97,51 +97,27 @@ public class DepositoController extends HttpServlet {
             rd.forward(request, response);
 
         } else {
-            ClienteDAO clienteDAO = new ClienteDAO();
-            Cliente cliente = new Cliente();
+            Deposito deposito = new Deposito(ContaDepositante, ContaDepositario, valor);
+            deposito.setId(id);
+
+            DepositoDAO depositoDAO = new DepositoDAO();
+
             try {
-                cliente = clienteDAO.getCliente(ContaDepositario);
-            } catch (Exception ex) {
-                System.out.println(ex.getMessage());
-                throw new RuntimeException("Falha em uma query para get de cliente ao fazer deposito");
-            }
-            if(cliente == null){
-                Deposito deposito = new Deposito();
                 switch (btEnviar) {
                     case "NovoDeposito":
-                        request.setAttribute("acao", "NovoDeposito");
+                        depositoDAO.NovoDeposito(deposito, saldo);
+                        request.setAttribute("msgOperacaoRealizada", "Inclusão realizada com sucesso");
                         break;
                 }
 
-                request.setAttribute("msgError", "Conta não existe");
                 request.setAttribute("deposito", deposito);
-                rd = request.getRequestDispatcher("/view/deposito/formDeposito.jsp");
+
+                rd = request.getRequestDispatcher("/DashboardControllerCliente");
                 rd.forward(request, response);
-            
-            }else{
 
-                Deposito deposito = new Deposito(ContaDepositante, ContaDepositario, valor);
-                deposito.setId(id);
-
-                DepositoDAO depositoDAO = new DepositoDAO();
-
-                try {
-                    switch (btEnviar) {
-                        case "NovoDeposito":
-                            depositoDAO.NovoDeposito(deposito, saldo);
-                            request.setAttribute("msgOperacaoRealizada", "Inclusão realizada com sucesso");
-                            break;
-                    }
-
-                    request.setAttribute("deposito", deposito);
-
-                    rd = request.getRequestDispatcher("/DashboardControllerCliente");
-                    rd.forward(request, response);
-
-                } catch (Exception ex) {
-                    System.out.println(ex.getMessage());
-                    throw new RuntimeException("Falha em uma query para cadastro de deposito");
-                }
+            } catch (Exception ex) {
+                System.out.println(ex.getMessage());
+                throw new RuntimeException("Falha em uma query para cadastro de deposito");
             }
         }
     }

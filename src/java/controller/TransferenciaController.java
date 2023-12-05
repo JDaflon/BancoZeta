@@ -79,13 +79,13 @@ public class TransferenciaController extends HttpServlet {
         double saldo = Double.parseDouble(request.getParameter("saldo"));
         
         ClienteDAO clienteDAO = new ClienteDAO();
-            Cliente cliente = new Cliente();
-            try {
-                cliente = clienteDAO.getCliente(ContaOrigem);
-            } catch (Exception ex) {
-                System.out.println(ex.getMessage());
-                throw new RuntimeException("Falha em uma query para get de cliente ao fazer transferencia");
-            }
+        Cliente cliente = new Cliente();
+        try {
+            cliente = clienteDAO.getCliente(ContaOrigem);
+        } catch (Exception ex) {
+            System.out.println(ex.getMessage());
+            throw new RuntimeException("Falha em uma query para get de cliente ao fazer transferencia");
+        }
         
         RequestDispatcher rd;
         if (valor < 0.0) {
@@ -122,8 +122,8 @@ public class TransferenciaController extends HttpServlet {
                 if(valor > saldo){
                     Transferencia transferencia = new Transferencia();
                     switch (btEnviar) {
-                        case "NovoTransferencia":
-                            request.setAttribute("acao", "NovoTransferencia");
+                        case "NovaTransferencia":
+                            request.setAttribute("acao", "NovaTransferencia");
                             break;
                     }
 

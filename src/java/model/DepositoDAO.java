@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import entidade.Deposito;
+import java.sql.Timestamp;
 
 public class DepositoDAO{
     
@@ -43,7 +44,8 @@ public class DepositoDAO{
             PreparedStatement sql = conexao.getConexao().prepareStatement("SELECT * FROM depositos WHERE ID = ? ");
             sql.setInt(1, id);
             ResultSet resultado = sql.executeQuery();
-            if (resultado != null) {
+            
+            if(resultado != null){
                 while (resultado.next()) {
                     deposito.setId(Integer.parseInt(resultado.getString("ID")));
                     deposito.setContaDepositante(Integer.parseInt(resultado.getString("ContaDepositante")));

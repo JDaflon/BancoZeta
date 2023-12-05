@@ -7,12 +7,12 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import model.old.UsuarioDAO;
-import aplicacao.Usuario;
+import model.ClienteDAO;
+import entidade.Cliente;
 import javax.servlet.RequestDispatcher;
 
-@WebServlet(name = "UsuarioController", urlPatterns = {"/UsuarioController"})
-public class UsuarioController extends HttpServlet {
+@WebServlet(name = "ClienteController", urlPatterns = {"/ClienteController"})
+public class ClienteController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -20,41 +20,41 @@ public class UsuarioController extends HttpServlet {
 
         String acao = (String) request.getParameter("acao");
 
-        Usuario usuario = new Usuario();
-        UsuarioDAO usuarioDAO = new UsuarioDAO();
+        Cliente cliente = new Cliente();
+        ClienteDAO clienteDAO = new ClienteDAO();
         RequestDispatcher rd;
         switch (acao) {
             case "Listar":
                 try {
-                    ArrayList<aplicacao.Usuario> listaUsuarios = usuarioDAO.ListaDeUsuarios();
+                    ArrayList<Cliente> listaClientes = clienteDAO.ListaDeCliente();
                     request.setAttribute("msgOperacaoRealizada", "");
-                    request.setAttribute("listaUsuarios", listaUsuarios);
-                    rd = request.getRequestDispatcher("/view/usuario/listaUsuarios.jsp");
+                    request.setAttribute("listaClientes", listaClientes);
+                    rd = request.getRequestDispatcher("/view/cliente/listaClientes.jsp");
                     rd.forward(request, response);
 
                 } catch (IOException | ServletException ex) {
                     System.out.println(ex.getMessage());
-                    throw new RuntimeException("Falha na query listar usuarios (Usuario) ");
+                    throw new RuntimeException("Falha na query listar clientes (Cliente) ");
                 }
                 break;
             case "Alterar":
             case "Excluir":
                 try {
                     int id = Integer.parseInt(request.getParameter("id"));
-                    usuario = usuarioDAO.getUsuario(id);
-                    usuario.setId(id);
+                    cliente = clienteDAO.getCliente(id);
+                    cliente.setId(id);
                 } catch (Exception ex) {
                     System.out.println(ex.getMessage());
-                    throw new RuntimeException("Falha em uma query para cadastro de usuario");
+                    throw new RuntimeException("Falha em uma query para cadastro de cliente");
                 }
                 break;
 
         }
-        request.setAttribute("usuario", usuario);
+        request.setAttribute("cliente", cliente);
         request.setAttribute("msgError", "");
         request.setAttribute("acao", acao);
 
-        rd = request.getRequestDispatcher("/view/usuario/formUsuario.jsp");
+        rd = request.getRequestDispatcher("/view/cliente/formCliente.jsp");
         rd.forward(request, response);
 
     }
@@ -64,17 +64,19 @@ public class UsuarioController extends HttpServlet {
             throws ServletException, IOException {
 
         int id = Integer.parseInt(request.getParameter("id"));
-        String nome_user = request.getParameter("nome");
-        String cpf_user = request.getParameter("cpf");
-        String endereco_user = request.getParameter("endereco");
-        String senha_user = request.getParameter("senha");
+        int numConta = Integer.parseInt(request.getParameter("numConta"));
+        String nome = request.getParameter("nome");
+        String cpf = request.getParameter("cpf");
+        String senha = request.getParameter("senha");
+        String email = request.getParameter("email");
+        double saldo = Double.parseDouble(request.getParameter("saldo"));
         String btEnviar = request.getParameter("btEnviar");
 
         RequestDispatcher rd;
 
-        if (nome_user.isEmpty() || cpf_user.isEmpty() || endereco_user.isEmpty() || senha_user.isEmpty()) {
+        if (nome.isEmpty() || cpf.isEmpty() || senha.isEmpty() || email.isEmpty()) {
 
-            Usuario usuario = new Usuario();
+            Cliente cliente = new Cliente();
             switch (btEnviar) {
                 case "Incluir":
                     request.setAttribute("acao", "Incluir");
@@ -82,53 +84,53 @@ public class UsuarioController extends HttpServlet {
                 case "Alterar":
                 case "Excluir":
                     try {
-                        UsuarioDAO usuarioDAO = new UsuarioDAO();
-                        usuario = usuarioDAO.getUsuario(id);
+                        ClienteDAO clienteDAO = new ClienteDAO();
+                        cliente = clienteDAO.getCliente(id);
                     } catch (Exception ex) {
                         System.out.println(ex.getMessage());
-                        throw new RuntimeException("Falha em uma query para cadastro de usuario");
+                        throw new RuntimeException("Falha em uma query para cadastro de cliente");
                     }
                     break;
             }
 
             request.setAttribute("msgError", "É necessário preencher todos os campos");
-            request.setAttribute("usuario", usuario);
+            request.setAttribute("cliente", cliente);
 
-            rd = request.getRequestDispatcher("/view/usuario/formUsuario.jsp");
+            rd = request.getRequestDispatcher("/view/cliente/formCliente.jsp");
             rd.forward(request, response);
 
         } else {
 
-            Usuario usuario = new Usuario(nome_user, cpf_user, endereco_user, senha_user);
-            usuario.setId(id);
+            Cliente cliente = new Cliente(numConta, nome, cpf, senha, email, saldo);
+            cliente.setId(id);
 
-            UsuarioDAO usuarioDAO = new UsuarioDAO();
+            ClienteDAO clienteDAO = new ClienteDAO();
 
             try {
                 switch (btEnviar) {
                     case "Incluir":
-                        usuarioDAO.Inserir(usuario);
+                        clienteDAO.Inserir(cliente);
                         request.setAttribute("msgOperacaoRealizada", "Inclusão realizada com sucesso");
                         break;
                     case "Alterar":
-                        usuarioDAO.Alterar(usuario);
+                        clienteDAO.Alterar(cliente);
                         request.setAttribute("msgOperacaoRealizada", "Alteração realizada com sucesso");
                         break;
                     case "Excluir":
-                        usuarioDAO.Excluir(usuario);
+                        clienteDAO.Excluir(cliente);
                         request.setAttribute("msgOperacaoRealizada", "Exclusão realizada com sucesso");
                         break;
                 }
 
-                ArrayList<aplicacao.Usuario> listaUsuarios = usuarioDAO.ListaDeUsuarios();
-                request.setAttribute("listaUsuarios", listaUsuarios);
+                ArrayList<Cliente> listaClientes = clienteDAO.ListaDeCliente();
+                request.setAttribute("listaClientes", listaClientes);
 
-                rd = request.getRequestDispatcher("/view/usuario/listaUsuarios.jsp");
+                rd = request.getRequestDispatcher("/view/cliente/listaClientes.jsp");
                 rd.forward(request, response);
 
             } catch (Exception ex) {
                 System.out.println(ex.getMessage());
-                throw new RuntimeException("Falha em uma query para cadastro de usuario");
+                throw new RuntimeException("Falha em uma query para cadastro de cliente");
             }
         }
     }

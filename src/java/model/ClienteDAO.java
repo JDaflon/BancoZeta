@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import entidade.Cliente;
+import entidade.Extrato;
 
 public class ClienteDAO {
     
@@ -35,6 +36,7 @@ public class ClienteDAO {
             PreparedStatement sql = conexao.getConexao().prepareStatement("SELECT * FROM clientes WHERE numConta = ? ");
             sql.setInt(1, id);
             ResultSet resultado = sql.executeQuery();
+
             if (resultado != null) {
                 while (resultado.next()) {
                     cliente.setId(Integer.parseInt(resultado.getString("ID")));
@@ -44,9 +46,8 @@ public class ClienteDAO {
                     cliente.setSenha(resultado.getString("SENHA"));
                     cliente.setEmail(resultado.getString("EMAIL"));
                 }
-            }else{
-                return null;
             }
+            
             return cliente;
 
         } catch (SQLException e) {
@@ -116,6 +117,35 @@ public class ClienteDAO {
         }
         return meusClientes;
     }
+    
+    public ArrayList<Extrato> Extrato(int id) {
+        ArrayList<Extrato> extrato = new ArrayList();
+        Conexao conexao = new Conexao();
+        try {
+            PreparedStatement preparedStatement = conexao.getConexao().prepareStatement( "SELECT 'transferencia' as operacao, ContaDestino as conta, valor, transferencias.data from transferencias WHERE ContaOrigem = ?"
+                              + " union SELECT 'deposito' as operacao, ContaDepositario as conta, valor, depositos.data from depositos WHERE ContaDepositante = ?"
+                              + " union SELECT 'saque' as operacao, numConta as conta, valor, saques.data from saques WHERE numConta = ?"
+                              + " order by data desc");
+            preparedStatement.setInt(1, id);
+            ResultSet resultado = preparedStatement.executeQuery();
+            if (resultado != null) {
+                while (resultado.next()) {
+                    Extrato operacao = new Extrato(
+                            resultado.getString("OPERACAO"),
+                            resultado.getInt("ContaDestino"),
+                            resultado.getDouble("VALOR"),
+                            resultado.getTimestamp("DATA"));
+                    operacao.setId(Integer.parseInt(resultado.getString("ID")));
+                    extrato.add(operacao);
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Query de select (ListaDeCliente) incorreta");
+        } finally {
+            conexao.closeConexao();
+        }
+        return extrato;
+    }   
 
     public Cliente Logar(Cliente cliente) throws Exception {
         Conexao conexao = new Conexao();
